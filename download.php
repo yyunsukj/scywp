@@ -64,7 +64,9 @@ if (isset($_GET['file'])) {
                 if ($file) {
                     while (!feof($file)) {
                         print(fread($file, 1024 * 8));
-                        ob_flush();
+                        if (ob_get_level() > 0) {
+                            ob_flush();
+                        }
                         flush();
                     }
                     fclose($file);
@@ -157,7 +159,9 @@ if (isset($_GET['files'])) {
                 if ($file) {
                     while (!feof($file)) {
                         print(fread($file, 1024 * 8));
-                        ob_flush();
+                        if (ob_get_level() > 0) {
+                            ob_flush();
+                        }
                         flush();
                     }
                     fclose($file);
