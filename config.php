@@ -3,7 +3,11 @@
 //  * @LastEditors: Swk(葫芦侠:陌南尘。)
 //  * @hitokoto: 先谋杀全世界的噪音 再审判心跳的供词.
 
-ob_clean();
+// 只在第一次包含时清理缓冲区
+if (!defined('CONFIG_PHP_LOADED')) {
+    define('CONFIG_PHP_LOADED', true);
+    ob_clean();
+}
 
 // 加载环境变量
 if (file_exists(__DIR__ . '/.env')) {

@@ -3,6 +3,9 @@
 //  * @LastEditors: Swk(葫芦侠:陌南尘。)
 //  * @hitokoto: 先谋杀全世界的噪音 再审判心跳的供词.
 
+// 确保配置和函数已加载
+require_once __DIR__ . '/config.php';
+
 if (isset($_SESSION['successMessage'])) {
     $successMessage = $_SESSION['successMessage'];
     unset($_SESSION['successMessage']);
@@ -616,13 +619,16 @@ if (isset($_SESSION['errorMessage'])) {
                                                              $supportedDocExts = ['pdf'];
                                                              $isSupportedForOnlineView = in_array($fileExt, array_merge($supportedImageExts, $supportedVideoExts, $supportedDocExts));
 
-                                                             $fileId = $file['id'];
-                                                             $url = 'index.php?download_file=1&file=' . $fileId;
-                                                             if ($isSupportedForOnlineView) {
-                                                                 $ossPath = $file['path'];
-                                                                 $url = 'https://' . OSS_BUCKET . '.' . OSS_ENDPOINT . '/' . $ossPath;
-                                                             }
-                                                         ?>
+$fileId = $file['id'];
+                                                              $url = 'index.php?download_file=1&file=' . $fileId;
+                                                              if ($isSupportedForOnlineView) {
+                                                                  $ossPath = $file['path'];
+                                                                  // 为在线预览文件生成签名URL（24小时有效期）
+                                                                  $ossClient = getOSSClient();
+                                                                  $signedUrl = $ossClient->signUrl(OSS_BUCKET, $ossPath, 86400);
+                                                                  $url = $signedUrl;
+                                                              }
+                                                          ?>
                                                          <a href="<?php echo $url; ?>" target="_blank" class="text-gray-900 hover:underline" onclick="event.stopPropagation();">
                                                              <?php echo htmlspecialchars($file['name']); ?>
                                                          </a>
