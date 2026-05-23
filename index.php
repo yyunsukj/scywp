@@ -705,13 +705,6 @@ if (isset($_GET['download_file'])) {
         $errorMessage = '文件下载失败: ' . $e->getMessage();
     }
 }
-        
-        $stmt->close();
-        $conn->close();
-    } catch (\Exception $e) {
-        $errorMessage = '下载失败: ' . $e->getMessage();
-    }
-}
 
 
 // index.php 文件中，批量文件下载部分
