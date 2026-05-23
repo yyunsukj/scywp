@@ -63,25 +63,71 @@ if (isset($_SESSION['errorMessage'])) {
 
     }
 
-    /* 不同按钮颜色区分 */
-   .copy-link-btn {
-        background-color: #165DFF; /* 蓝色 */
-        color: white;
+/* 不同按钮颜色区分 */
+    .copy-link-btn {
+         background-color: #165DFF; /* 蓝色 */
+         color: white;
     }
 
    .delete-selected-btn {
-        background-color: #FF4747; /* 红色 */
-        color: white;
+         background-color: #FF4747; /* 红色 */
+         color: white;
     }
 
-   .move-selected-btn {
-        background-color: #36CFC9; /* 绿色 */
-        color: white;
+    .move-selected-btn {
+         background-color: #36CFC9; /* 绿色 */
+         color: white;
     }
 
-   .download-selected-btn {
-        background-color: #722ED1; /* 紫色 */
-        color: white;
+    .download-selected-btn {
+         background-color: #722ED1; /* 紫色 */
+         color: white;
+    }
+
+    /* 全选按钮美化样式 */
+    .select-all-btn {
+         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+         color: white;
+         border: 2px solid transparent;
+         padding: 0.5rem 1.25rem;
+         border-radius: 2rem;
+         font-weight: 500;
+         transition: all 0.3s ease;
+         box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+         display: flex;
+         align-items: center;
+         gap: 0.5rem;
+    }
+
+    .select-all-btn:hover {
+         background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+         box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+         transform: translateY(-2px);
+    }
+
+    .select-all-btn:active {
+         transform: translateY(0);
+         box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+    }
+
+    .select-all-btn i {
+         font-size: 1rem;
+         transition: transform 0.2s ease;
+    }
+
+    .select-all-btn:hover i {
+         transform: scale(1.1);
+    }
+
+    /* 全选选中状态 */
+    .select-all-btn.selected {
+         background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+         box-shadow: 0 2px 8px rgba(245, 87, 108, 0.3);
+    }
+
+    .select-all-btn.selected:hover {
+         background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+         box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
     }
 
 /* 手机端布局调整 */
@@ -103,13 +149,22 @@ if (isset($_SESSION['errorMessage'])) {
 
     /* 统一按钮样式 */
    .batch-action-btn {
-        width: 46%;
-        margin-left: 5px;
-        margin-right: 5px;
-        margin-bottom: 5px;
+         width: 46%;
+         margin-left: 5px;
+         margin-right: 5px;
+         margin-bottom: 5px;
 
     }
 
+    /* 手机端全选按钮优化 */
+    .select-all-btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .select-all-btn i {
+        font-size: 0.875rem;
+    }
 }
 </style>
     <style type="text/tailwindcss">
@@ -486,17 +541,18 @@ if (isset($_SESSION['errorMessage'])) {
 
 
 
-                    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                        <div class="flex items-center">
-                          
+<div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+
                                 <input type="checkbox" id="masterCheckbox" class="sr-only peer">
-       
-                          
-                            <button id="selectAllBtn" class="text-sm text-gray-500 hover:text-primary transition-colors">
-                                <i class="fa fa-square-o mr-1"></i>全选
+
+
+                            <button id="selectAllBtn" class="select-all-btn">
+                                <i class="fa fa-square-o"></i>
+                                <span>全选</span>
                             </button>
                         </div>
-       </div>
+</div>
 
 
 
@@ -1227,11 +1283,13 @@ function updateSelectAllButton() {
     if (totalCount > 0 && checkedCount === totalCount) {
         isSelectAll = true;
         masterCheckbox.checked = true;
-        selectAllBtn.innerHTML = '<i class="fa fa-check-square mr-1"></i>取消全选';
+        selectAllBtn.innerHTML = '<i class="fa fa-check-square"></i><span>取消全选</span>';
+        selectAllBtn.classList.add('selected');
     } else {
         isSelectAll = false;
         masterCheckbox.checked = false;
-        selectAllBtn.innerHTML = '<i class="fa fa-square-o mr-1"></i>全选';
+        selectAllBtn.innerHTML = '<i class="fa fa-square-o"></i><span>全选</span>';
+        selectAllBtn.classList.remove('selected');
     }
 
     // 更新批量操作按钮状态
