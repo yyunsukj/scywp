@@ -1,0 +1,34 @@
+# 临时文件
+system.zip
+*.log
+tmp/
+temp/
+
+# 环境变量文件
+.env
+
+# 上传目录（内容不需要提交）
+uploads/*
+!uploads/.gitkeep
+
+# Composer
+/vendor/
+composer.lock
+
+# PHP
+.phpunit.result.cache
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 临时调试文件
+/tmp/*.php
+/cloud_debug.log
