@@ -5,6 +5,24 @@
 
 ob_clean();
 
+// 加载环境变量
+if (file_exists(__DIR__ . '/.env')) {
+    $lines = file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) {
+            continue;
+        }
+        list($name, $value) = explode('=', $line, 2);
+        $name = trim($name);
+        $value = trim($value);
+        if (!array_key_exists($name, $_SERVER) && !array_key_exists($name, $_ENV)) {
+            putenv(sprintf('%s=%s', $name, $value));
+            $_ENV[$name] = $value;
+            $_SERVER[$name] = $value;
+        }
+    }
+}
+
 // MySQL数据库配置
 define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
 define('DB_USER', getenv('DB_USER') ?: 'root');
@@ -18,7 +36,7 @@ define('OSS_BUCKET', getenv('OSS_BUCKET') ?: 'scywp');
 define('OSS_ENDPOINT', getenv('OSS_ENDPOINT') ?: 'http://oss-cn-shenzhen.aliyuncs.com');
 define('OSS_PREFIX', 'uploads/');
 
-// 文件上传目录（本地临时目录）
+// 文件上传目录
 define('UPLOAD_DIR', __DIR__ . '/uploads');
 
 // 创建数据库连接
@@ -49,4 +67,4 @@ if (!file_exists(UPLOAD_DIR)) {
     mkdir(UPLOAD_DIR, 0777, true);
 }
 
-?>    
+?>
