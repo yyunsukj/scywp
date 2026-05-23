@@ -112,6 +112,7 @@ php -S localhost:8000
 scywp/
 ├── config.php          # 配置文件
 ├── index.php           # 主文件
+├── download.php        # 文件下载代理
 ├── login.php           # 登录页面
 ├── template.php        # 模板文件
 ├── composer.json       # Composer配置
@@ -120,6 +121,14 @@ scywp/
 ├── uploads/            # 上传目录
 └── vendor/             # Composer依赖
 ```
+
+## 核心文件说明
+
+### download.php
+- 专门处理文件下载的代理服务
+- 避免OSS Referer策略限制
+- 支持单个文件下载和批量下载
+- 服务器端代理，安全可靠
 
 ## 配置说明
 

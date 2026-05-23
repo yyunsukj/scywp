@@ -101,14 +101,14 @@ if (isset($_GET['files'])) {
         $conn = getDBConnection();
         $zip = new ZipArchive();
         $zipFileName = sys_get_temp_dir() . '/download_' . time() . '_' . $userId . '.zip';
-
+        $ossClient = getOSSClient();
+        
         // 清除输出缓冲区
         if (ob_get_level()) {
             ob_end_clean();
         }
 
         if ($zip->open($zipFileName, ZipArchive::CREATE) === TRUE) {
-            $ossClient = getOSSClient();
             $addedFiles = 0;
             $tempFiles = [];
             
@@ -129,12 +129,17 @@ if (isset($_GET['files'])) {
                         \OSS\OssClient::OSS_FILE_DOWNLOAD => $tempFile
                     ];
                     
-                    $ossClient->getObject(OSS_BUCKET, $ossPath, $options);
-                    
-                    if (file_exists($tempFile)) {
-                        $zip->addFile($tempFile, $fileName);
-                        $tempFiles[] = $tempFile;
-                        $addedFiles++;
+                    try {
+                        $ossClient->getObject(OSS_BUCKET, $ossPath, $options);
+                        
+                        if (file_exists($tempFile)) {
+                            $zip->addFile($tempFile, $fileName);
+                            $tempFiles[] = $tempFile;
+                            $addedFiles++;
+                        }
+                    } catch (\Exception $e) {
+                        // 记录单个文件下载失败，继续处理其他文件
+                        error_log("Failed to download file $fileName: " . $e->getMessage());
                     }
                 }
                 
@@ -153,7 +158,7 @@ if (isset($_GET['files'])) {
                 header('Cache-Control: must-revalidate');
                 header('Pragma: public');
                 header('Content-Length: ' . filesize($zipFileName));
-
+ 
                 // 输出文件内容
                 $file = fopen($zipFileName, 'rb');
                 if ($file) {
@@ -166,7 +171,7 @@ if (isset($_GET['files'])) {
                     }
                     fclose($file);
                 }
-
+ 
                 // 清理临时文件
                 unlink($zipFileName);
                 foreach ($tempFiles as $tempFile) {
@@ -178,7 +183,7 @@ if (isset($_GET['files'])) {
             } else {
                 header('Content-Type: application/json');
                 echo json_encode(['error' => '批量下载失败，没有可下载的文件']);
-            }
+                }
         } else {
             header('Content-Type: application/json');
             echo json_encode(['error' => '无法创建压缩文件']);
