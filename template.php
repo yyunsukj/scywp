@@ -493,7 +493,7 @@ if (isset($_SESSION['errorMessage'])) {
        
                           
                             <button id="selectAllBtn" class="text-sm text-gray-500 hover:text-primary transition-colors">
-                                <i class="fa fa-check-square-o mr-1"></i>全选
+                                <i class="fa fa-square-o mr-1"></i>全选
                             </button>
                         </div>
        </div>
@@ -1227,11 +1227,11 @@ function updateSelectAllButton() {
     if (totalCount > 0 && checkedCount === totalCount) {
         isSelectAll = true;
         masterCheckbox.checked = true;
-        selectAllBtn.innerHTML = '<i class="fa fa-square-o mr-1"></i>取消全选';
+        selectAllBtn.innerHTML = '<i class="fa fa-check-square mr-1"></i>取消全选';
     } else {
         isSelectAll = false;
         masterCheckbox.checked = false;
-        selectAllBtn.innerHTML = '<i class="fa fa-check-square-o mr-1"></i>全选';
+        selectAllBtn.innerHTML = '<i class="fa fa-square-o mr-1"></i>全选';
     }
 
     // 更新批量操作按钮状态
