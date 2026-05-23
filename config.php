@@ -6,7 +6,9 @@
 // 只在第一次包含时清理缓冲区
 if (!defined('CONFIG_PHP_LOADED')) {
     define('CONFIG_PHP_LOADED', true);
-    ob_clean();
+    if (ob_get_level() > 0) {
+        ob_clean();
+    }
 }
 
 // 加载环境变量

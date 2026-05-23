@@ -65,7 +65,7 @@
             </div>
         <?php endif; ?>
         
-        <form method="POST" class="space-y-5">
+        <form method="POST" action="index.php" class="space-y-5">
             <div class="space-y-2">
                 <label for="username" class="block text-sm font-medium text-gray-700">用户名</label>
                 <div class="relative">

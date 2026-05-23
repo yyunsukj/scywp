@@ -183,7 +183,7 @@ if (isset($_GET['files'])) {
             } else {
                 header('Content-Type: application/json');
                 echo json_encode(['error' => '批量下载失败，没有可下载的文件']);
-                }
+            }
         } else {
             header('Content-Type: application/json');
             echo json_encode(['error' => '无法创建压缩文件']);
