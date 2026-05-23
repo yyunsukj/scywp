@@ -650,15 +650,61 @@ if (isset($_GET['download_file'])) {
             $fileName = $file['file_name'];
             $ossPath = $file['file_path'];
             
-            // 生成带签名的下载URL
+            // 服务器端代理下载（避免Referer策略问题）
             $ossClient = getOSSClient();
-            $signedUrl = $ossClient->signUrl(OSS_BUCKET, $ossPath, 3600); // 1小时有效
             
-            header('Location: ' . $signedUrl);
-            exit;
+            // 临时文件路径
+            $tempFile = sys_get_temp_dir() . '/' . md5($ossPath . $userId) . '_' . basename($ossPath);
+            
+            // 从OSS下载文件到临时目录
+            $options = [
+                \OSS\OssClient::OSS_FILE_DOWNLOAD => $tempFile
+            ];
+            
+            $ossClient->getObject(OSS_BUCKET, $ossPath, $options);
+            
+            if (file_exists($tempFile)) {
+                // 清除输出缓冲区
+                if (ob_get_level()) {
+                    ob_end_clean();
+                }
+                
+                // 设置下载头信息
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename="' . $fileName . '"');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . filesize($tempFile));
+                
+                // 输出文件内容
+                $file = fopen($tempFile, 'rb');
+                if ($file) {
+                    while (!feof($file)) {
+                        print(fread($file, 1024 * 8));
+                        ob_flush();
+                        flush();
+                    }
+                    fclose($file);
+                }
+                
+                // 删除临时文件
+                unlink($tempFile);
+                exit;
+            } else {
+                $errorMessage = '文件下载失败';
+            }
         } else {
             $errorMessage = '文件不存在或无权访问';
         }
+        
+        $stmt->close();
+        $conn->close();
+    } catch (\Exception $e) {
+        $errorMessage = '文件下载失败: ' . $e->getMessage();
+    }
+}
         
         $stmt->close();
         $conn->close();

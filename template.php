@@ -617,17 +617,9 @@ if (isset($_SESSION['errorMessage'])) {
                                                              $supportedImageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
                                                              $supportedVideoExts = ['mp4', 'webm', 'ogg'];
                                                              $supportedDocExts = ['pdf'];
-                                                             $isSupportedForOnlineView = in_array($fileExt, array_merge($supportedImageExts, $supportedVideoExts, $supportedDocExts));
-
-$fileId = $file['id'];
+$isSupportedForOnlineView = false; // 暂时禁用在线预览以避免Referer策略问题
+                                                              $fileId = $file['id'];
                                                               $url = 'index.php?download_file=1&file=' . $fileId;
-                                                              if ($isSupportedForOnlineView) {
-                                                                  $ossPath = $file['path'];
-                                                                  // 为在线预览文件生成签名URL（24小时有效期）
-                                                                  $ossClient = getOSSClient();
-                                                                  $signedUrl = $ossClient->signUrl(OSS_BUCKET, $ossPath, 86400);
-                                                                  $url = $signedUrl;
-                                                              }
                                                           ?>
                                                          <a href="<?php echo $url; ?>" target="_blank" class="text-gray-900 hover:underline" onclick="event.stopPropagation();">
                                                              <?php echo htmlspecialchars($file['name']); ?>
