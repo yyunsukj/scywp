@@ -89,45 +89,46 @@ if (isset($_SESSION['errorMessage'])) {
          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
          color: white;
          border: 2px solid transparent;
-         padding: 0.5rem 1.25rem;
-         border-radius: 2rem;
+         padding: 0.35rem 0.8rem;
+         border-radius: 1.5rem;
          font-weight: 500;
+         font-size: 0.8125rem;
          transition: all 0.3s ease;
-         box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+         box-shadow: 0 2px 6px rgba(102, 126, 234, 0.2);
          display: flex;
          align-items: center;
-         gap: 0.5rem;
+         gap: 0.35rem;
     }
 
     .select-all-btn:hover {
          background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-         box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-         transform: translateY(-2px);
+         box-shadow: 0 3px 8px rgba(102, 126, 234, 0.3);
+         transform: translateY(-1px);
     }
 
     .select-all-btn:active {
          transform: translateY(0);
-         box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+         box-shadow: 0 1px 4px rgba(102, 126, 234, 0.2);
     }
 
     .select-all-btn i {
-         font-size: 1rem;
+         font-size: 0.875rem;
          transition: transform 0.2s ease;
     }
 
     .select-all-btn:hover i {
-         transform: scale(1.1);
+         transform: scale(1.05);
     }
 
     /* 全选选中状态 */
     .select-all-btn.selected {
          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-         box-shadow: 0 2px 8px rgba(245, 87, 108, 0.3);
+         box-shadow: 0 2px 6px rgba(245, 87, 108, 0.2);
     }
 
     .select-all-btn.selected:hover {
          background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
-         box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+         box-shadow: 0 3px 8px rgba(245, 87, 108, 0.3);
     }
 
 /* 手机端布局调整 */
