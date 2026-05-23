@@ -619,7 +619,7 @@ if (isset($_SESSION['errorMessage'])) {
                                                              $supportedDocExts = ['pdf'];
 $isSupportedForOnlineView = false; // 暂时禁用在线预览以避免Referer策略问题
                                                               $fileId = $file['id'];
-                                                              $url = 'index.php?download_file=1&file=' . $fileId;
+                                                              $url = 'download.php?file=' . $fileId;
                                                           ?>
                                                          <a href="<?php echo $url; ?>" target="_blank" class="text-gray-900 hover:underline" onclick="event.stopPropagation();">
                                                              <?php echo htmlspecialchars($file['name']); ?>
@@ -1555,7 +1555,7 @@ document.getElementById('downloadSelectedBtn').addEventListener('click', functio
         selectedFiles.push(checkbox.getAttribute('data-id'));
     });
 
-    let url = 'index.php?download_selected_files=1&files=' + encodeURIComponent(selectedFiles.join(','));
+    let url = 'download.php?files=' + encodeURIComponent(selectedFiles.join(','));
     window.location.href = url;
 });
 
@@ -1569,7 +1569,7 @@ document.querySelectorAll('[data-action="download-file"]').forEach(button => {
     button.addEventListener('click', function(e) {
         e.stopPropagation();
         const fileId = this.getAttribute('data-id');
-        let url = 'index.php?download_file=1&file=' + fileId;
+        let url = 'download.php?file=' + fileId;
         window.location.href = url;
     });
 });
