@@ -40,135 +40,349 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>后台管理 - 文件管理</title>
-    <script src="../file/3.4.16"></script>
-    <link href="../file/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#165DFF',
-                        secondary: '#36CFC9',
-                        accent: '#722ED1',
-                        neutral: '#F5F7FA',
-                        'neutral-dark': '#4E5969',
-                    },
-                }
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/antd/5.12.2/reset.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* 侧边栏 */
+        .ant-layout-sider {
+            width: 256px;
+            background: #001529;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+        }
+
+        .ant-layout-sider-children {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .logo {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            background: #002140;
+        }
+
+        .logo i {
+            font-size: 24px;
+            color: #1890ff;
+            margin-right: 16px;
+        }
+
+        .logo span {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .ant-menu {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.65);
+            border-right: none;
+        }
+
+        .ant-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            margin: 4px 0;
+            height: 40px;
+            line-height: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ant-menu-item:hover {
+            color: white;
+        }
+
+        .ant-menu-item-selected {
+            background: #1890ff;
+            color: white;
+        }
+
+        .ant-menu-item i {
+            margin-right: 12px;
+            font-size: 16px;
+            width: 16px;
+            text-align: center;
+        }
+
+        /* 主内容区域 */
+        .ant-layout {
+            flex: 1;
+            margin-left: 256px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ant-layout-header {
+            height: 64px;
+            background: white;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .ant-layout-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .breadcrumb {
+            color: rgba(0, 0, 0, 0.45);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.85);
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: rgba(0, 0, 0, 0.45);
+            font-size: 14px;
+        }
+
+        /* 表格 */
+        .ant-table-container {
+            background: white;
+            border-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f0f0f0;
+        }
+
+        .ant-table-wrapper {
+            padding: 24px;
+        }
+
+        .ant-table-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.85);
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ant-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .ant-table thead {
+            background: #fafafa;
+        }
+
+        .ant-table th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.85);
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+
+        .ant-table td {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            color: rgba(0, 0, 0, 0.65);
+            font-size: 14px;
+        }
+
+        .ant-table tr:hover td {
+            background: #fafafa;
+        }
+
+        /* 按钮样式 */
+        .ant-btn {
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            cursor: pointer;
+            background: #fff;
+            border: 1px solid #d9d9d9;
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+            transition: all 0.3s;
+            height: 32px;
+            padding: 4px 15px;
+            font-size: 14px;
+            border-radius: 2px;
+            color: rgba(0, 0, 0, 0.65);
+            text-decoration: none;
+            line-height: 1.5715;
+        }
+
+        .ant-btn:hover {
+            color: #40a9ff;
+            border-color: #40a9ff;
+        }
+
+        .ant-btn-danger {
+            background: #fff;
+            border-color: #ffccc7;
+            color: #ff4d4f;
+        }
+
+        .ant-btn-danger:hover {
+            background: #fff1f0;
+            border-color: #ffccc7;
+            color: #ff4d4f;
+        }
+
+        /* 文件图标 */
+        .file-icon {
+            margin-right: 8px;
+            color: rgba(0, 0, 0, 0.45);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .ant-layout-sider {
+                width: 0;
+                overflow: hidden;
+            }
+
+            .ant-layout {
+                margin-left: 0;
+            }
+
+            .ant-table {
+                font-size: 12px;
+            }
+
+            .ant-table th,
+            .ant-table td {
+                padding: 12px 8px;
             }
         }
-    </script>
+    </style>
 </head>
-<body class="bg-neutral min-h-screen">
-    <div class="flex">
-        <!-- 侧边栏 -->
-        <div class="w-64 bg-white shadow-lg min-h-screen fixed">
-            <div class="p-6 border-b border-gray-100">
-                <div class="flex items-center">
-                    <div class="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center mr-3">
-                        <i class="fa fa-shield text-white"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-lg font-bold text-gray-800">后台管理</h2>
-                        <p class="text-xs text-gray-500">系统控制台</p>
-                    </div>
-                </div>
+<body>
+    <!-- 侧边栏 -->
+    <div class="ant-layout-sider">
+        <div class="ant-layout-sider-children">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>后台管理</span>
             </div>
 
-            <nav class="p-4">
-                <ul class="space-y-2">
-                    <li>
-                        <a href="index.php" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-                            <i class="fa fa-dashboard mr-3"></i>
-                            <span>控制台</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="users.php" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-                            <i class="fa fa-users mr-3"></i>
-                            <span>用户管理</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="files.php" class="flex items-center px-4 py-3 bg-primary/10 text-primary rounded-lg">
-                            <i class="fa fa-folder mr-3"></i>
-                            <span>文件管理</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="settings.php" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-                            <i class="fa fa-cog mr-3"></i>
-                            <span>系统设置</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+            <div class="ant-menu">
+                <a href="index.php" style="text-decoration: none; color: inherit;">
+                    <div class="ant-menu-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>控制台</span>
+                    </div>
+                </a>
+                <a href="users.php" style="text-decoration: none; color: inherit;">
+                    <div class="ant-menu-item">
+                        <i class="fas fa-users"></i>
+                        <span>用户管理</span>
+                    </div>
+                </a>
+                <div class="ant-menu-item ant-menu-item-selected">
+                    <i class="fas fa-folder"></i>
+                    <span>文件管理</span>
+                </div>
+                <a href="settings.php" style="text-decoration: none; color: inherit;">
+                    <div class="ant-menu-item">
+                        <i class="fas fa-cog"></i>
+                        <span>系统设置</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
 
-            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100">
-                <a href="../index.php" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-                    <i class="fa fa-arrow-left mr-3"></i>
-                    <span>返回前台</span>
+    <!-- 主内容区域 -->
+    <div class="ant-layout">
+        <!-- 顶部导航栏 -->
+        <div class="ant-layout-header">
+            <div>
+                <div class="breadcrumb">首页 / 文件管理</div>
+            </div>
+            <div class="ant-btn" style="border: none; background: transparent;">
+                <a href="?logout=1" style="text-decoration: none; color: rgba(0, 0, 0, 0.65);">
+                    <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i>
+                    退出登录
                 </a>
             </div>
         </div>
 
-        <!-- 主内容区 -->
-        <div class="flex-1 ml-64">
-            <!-- 顶部导航栏 -->
-            <div class="bg-white shadow-sm border-b border-gray-100">
-                <div class="flex items-center justify-between px-8 py-4">
-                    <div>
-                        <h1 class="text-xl font-bold text-gray-800">文件管理</h1>
-                        <p class="text-sm text-gray-500">管理系统文件</p>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <a href="?logout=1" class="text-red-500 hover:text-red-600 transition-colors">
-                            <i class="fa fa-sign-out mr-1"></i>退出登录
-                        </a>
-                    </div>
-                </div>
+        <!-- 内容区域 -->
+        <div class="ant-layout-content">
+            <div class="page-header">
+                <h1>文件管理</h1>
+                <p>管理系统文件</p>
             </div>
 
-            <!-- 内容区域 -->
-            <div class="p-8">
-                <div class="bg-white rounded-xl shadow-sm">
-                    <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-                        <h3 class="text-lg font-semibold text-gray-800">文件列表</h3>
-                        <span class="text-sm text-gray-500">共 <?php echo count($files); ?> 个文件</span>
+            <!-- 文件表格 -->
+            <div class="ant-table-container">
+                <div class="ant-table-wrapper">
+                    <div class="ant-table-title">
+                        <span>文件列表</span>
+                        <span style="color: rgba(0, 0, 0, 0.45); font-weight: normal;">共 <?php echo count($files); ?> 个文件</span>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">文件名</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">大小</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">上传时间</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">用户</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100">
-                                <?php foreach ($files as $file): ?>
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center">
-                                            <i class="fa fa-file text-gray-400 mr-3"></i>
-                                            <span class="text-gray-900"><?php echo htmlspecialchars($file['file_name']); ?></span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 text-gray-600"><?php echo formatFileSize($file['file_size']); ?></td>
-                                    <td class="px-6 py-4 text-gray-600"><?php echo $file['upload_time']; ?></td>
-                                    <td class="px-6 py-4 text-gray-600"><?php echo htmlspecialchars($file['username']); ?></td>
-                                    <td class="px-6 py-4">
-                                        <a href="?delete=<?php echo $file['id']; ?>" onclick="return confirm('确定要删除文件 <?php echo htmlspecialchars($file['file_name']); ?> 吗？')"
-                                            class="text-red-500 hover:text-red-600 transition-colors">
-                                            <i class="fa fa-trash"></i> 删除
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="ant-table">
+                        <thead>
+                            <tr>
+                                <th>文件名</th>
+                                <th>大小</th>
+                                <th>上传时间</th>
+                                <th>用户</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($files as $file): ?>
+                            <tr>
+                                <td>
+                                    <i class="fas fa-file file-icon"></i>
+                                    <?php echo htmlspecialchars($file['file_name']); ?>
+                                </td>
+                                <td><?php echo formatFileSize($file['file_size']); ?></td>
+                                <td><?php echo $file['upload_time']; ?></td>
+                                <td><?php echo htmlspecialchars($file['username']); ?></td>
+                                <td>
+                                    <a href="?delete=<?php echo $file['id']; ?>" onclick="return confirm('确定要删除文件 <?php echo htmlspecialchars($file['file_name']); ?> 吗？')"
+                                        class="ant-btn ant-btn-danger">
+                                        <i class="fas fa-trash"></i> 删除
+                                    </a>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
